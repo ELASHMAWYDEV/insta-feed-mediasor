@@ -1,0 +1,75 @@
+@import "./assets/sass/globals";
+
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: $orange;
+}
+
+
+body::-webkit-scrollbar {
+  width: 3px;               /* width of the entire scrollbar */
+}
+body::-webkit-scrollbar-track {
+  background: $orange;        /* color of the tracking area */
+}
+body::-webkit-scrollbar-thumb {
+  background-color: $black;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: 'Cairo', sans-serif;
+  box-sizing: border-box;
+}
+
+
+
+.app-container {
+  header {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    div {
+      font-size: 26px;
+      font-weight: bold;
+    }
+  }
+  .new-comments-head {
+    background-color: $black;
+    color: $white;
+    padding: 7px;
+    padding-left: 15px;
+    border-radius: 0 25px 125px 0;
+    width: 250px;
+  }
+  .feed-head {
+    background-color: $black;
+    color: $white;
+    padding: 5px;
+    border-radius: 25px 0 0 125px;
+    width: 250px;
+    text-align: center;
+    font-size: 28px;
+  }
+  .app-body {
+    display: flex;
+    justify-content: space-between;
+  }
+  .comments-container {
+    margin-right: auto;
+  }
+  .feeds-container {
+    margin-left: auto;
+    padding-top: 50px;
+    padding-right: 50px;
+    display: grid;
+    grid-gap: 40px;
+    grid-template-columns: 1fr;
+  }
+}

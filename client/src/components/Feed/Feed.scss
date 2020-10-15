@@ -1,0 +1,79 @@
+@import "../../assets/sass/globals";
+
+.feed-container {
+  position: relative;
+  .reactions-box {
+    position: absolute;
+    left: -90px;
+    bottom: 60px;
+    background-color: $black;
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 35px 0 0 35px;
+    padding: 30px 5px;
+    border: 1px solid $white;
+    border-right: none;
+  }
+  .heart-img {
+    position: relative;
+    .likes {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -75%);
+      color: $white;
+      font-weight: bold;
+      font-size: 22px;
+    }
+    img {
+      width: 60px;
+    }
+  }
+  .comment-img {
+    margin-top: 25px;
+    position: relative;
+    .comments {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -75%);
+      color: $black;
+      font-weight: bold;
+      font-size: 22px;
+    }
+    img {
+      width: 60px;
+      transform: rotateY(180deg);
+      fill: $white;
+    }
+  }
+  .feed-box {
+    display: flex;
+    width: 822px;
+    height: 462px;
+    background-color: $black;
+    border-radius: 35px;
+    overflow: hidden;
+    border: 1px solid $white;
+    
+  }
+  .feed-img {
+    width: 65%;
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  .feed-content {
+    color: $white;
+    width: 35%;
+    padding: 20px;
+    font-size: 20px;
+  }
+}
