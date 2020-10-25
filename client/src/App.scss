@@ -64,6 +64,10 @@ body::-webkit-scrollbar-thumb {
   }
   .comments-container {
     margin-right: auto;
+    padding-top: 50px;
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 1fr;
   }
   .feeds-container {
     margin-left: auto;
