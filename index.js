@@ -1,7 +1,16 @@
 const express = require("express");
 const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const PORT = process.env.PORT || 5001;
-const scraper = require("./scraper");
+
+//Middlewares
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.json());
 
 
 //For the react app
@@ -12,15 +21,13 @@ if (process.env.NODE_ENV == "production") {
   });
 }
 
-(async () => {
-  try {
 
-    let data = await scraper();
-    // console.log(data);
-  } catch (e) {
-    console.log(e.message);
-  }
-})();
+//Socket Hanler
+require("./socket")(io);
 
 
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+
+
+
+
+http.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

@@ -9,6 +9,7 @@ module.exports = async (username = "mediasor") => {
 
     //Calculate time for operation
     let t0 = performance.now();
+    console.log("Started Scraping...");
 
     //Init browser
     let browser = await puppeteer.launch();
@@ -25,13 +26,23 @@ module.exports = async (username = "mediasor") => {
     //Get each post data
     let posts = await getPostsData(postsLinks);
 
-    console.log(posts);
+    //Add vars to data object
+    data = {
+      id,
+      bio,
+      followers,
+      fullName,
+      profilePic,
+      postsCount,
+      posts
+    }
 
     await browser.close();
 
     //Log taken time to execute
     let t1 = performance.now();
     console.log(`Time taken: ${((t1 - t0) / 1000).toFixed(1)}s`);
+
 
     return data;
   } catch (e) {
