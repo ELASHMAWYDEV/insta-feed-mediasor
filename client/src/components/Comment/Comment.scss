@@ -4,7 +4,6 @@
   position: relative;
   height: max-content;
   display: flex;
-  align-items: center;
   .comment-box {
     width: 420px;
     height: 150px;
@@ -47,6 +46,17 @@
     color: $white;
     text-overflow: ellipsis;
     overflow: hidden;
+  }
+  .replies-container {
+    margin-top: 20px;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+    max-height: 120px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
   .reply-box {
     width: 420px;

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
-import { API_URL, SOCKET_URL } from "./config";
-import axios from "axios";
+import { SOCKET_URL } from "./config";
 import io from "socket.io-client";
 
 //Components

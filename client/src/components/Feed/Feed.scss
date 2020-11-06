@@ -78,5 +78,11 @@
     width: 35%;
     padding: 20px;
     font-size: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 9;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    max-height: 350px;
+    overflow: hidden;
   }
 }
