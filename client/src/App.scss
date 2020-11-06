@@ -1,40 +1,38 @@
 @import "./assets/sass/globals";
 
-body, html, #root {
+body,
+html,
+#root {
   margin: 0;
   padding: 0;
   min-height: 100%;
   background-color: $orange;
 }
 
-
 body::-webkit-scrollbar {
-  width: 3px;               /* width of the entire scrollbar */
+  width: 3px; /* width of the entire scrollbar */
 }
 body::-webkit-scrollbar-track {
-  background: $orange;        /* color of the tracking area */
+  background: $orange; /* color of the tracking area */
 }
 body::-webkit-scrollbar-thumb {
-  background-color: $black;    /* color of the scroll thumb */
-  border-radius: 20px;       /* roundness of the scroll thumb */
+  background-color: $black; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
 }
-
 
 * {
   margin: 0;
   padding: 0;
   text-decoration: none;
-  font-family: 'Cairo', sans-serif;
+  font-family: "Cairo", sans-serif;
   box-sizing: border-box;
 }
-
-
 
 .app-container {
   header {
     display: flex;
     justify-content: space-between;
-    margin-top: 40px;
+    padding-top: 40px;
     div {
       font-size: 26px;
       font-weight: bold;
@@ -60,21 +58,53 @@ body::-webkit-scrollbar-thumb {
   .app-body {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 100px;
-  }
-  .comments-container {
-    margin-right: auto;
-    padding-top: 50px;
-    display: grid;
-    grid-gap: 0px;
-    grid-template-columns: 1fr;
+    padding-bottom: 150px;
   }
   .feeds-container {
-    margin-left: auto;
     padding-top: 50px;
-    padding-right: 50px;
     display: grid;
     grid-gap: 60px;
     grid-template-columns: 1fr;
+    width: 100%;
+   
+  }
+  .comments-container {
+    position: relative;
+    margin-right: auto;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+    padding-bottom: 80px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .feed-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-height: 500px;
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      display: block;
+      width: 50%;
+      height: 100px;
+      background: $orange;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0) 0%,
+        $orange 100%
+      );
+      bottom: 0;
+      left: 0;
+      z-index: 2;
+    }
+  }
+  .feed-holder {
+    margin-right: 40px;
   }
 }

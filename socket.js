@@ -16,6 +16,8 @@ module.exports = (io) => {
         @event loading ==> emitting
       */
       socket.on("get-data", async () => {
+
+        console.log("Getting Data...");
         //Supose dataFile has data
         let fileHasData = true;
 

@@ -1,62 +1,70 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.scss";
+import { API_URL, SOCKET_URL } from "./config";
+import axios from "axios";
+import io from "socket.io-client";
 
 //Components
 import Feed from "./components/Feed/Feed";
 import Comment from "./components/Comment/Comment";
+import Loading from "./components/Loading/Loading";
+
+//Init Socket
+const socket = io(SOCKET_URL);
 
 const App = () => {
-  return (
-    <div className="app-container">
-      <header>
-        <div className="new-comments-head">New Comments</div>
-        <div className="feed-head">Feed</div>
-      </header>
+  const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
-      <div className="app-body">
-        <div className="comments-container">
-          <Comment
-            postImg={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s750x750/119516927_845632519509825_5327947799728453987_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=FEKAI2nEtxYAX-keNjE&_nc_tp=24&oh=e8ce7165cc3421e6f6d8a29026f93847&oe=5FB25733`}
-            userImg={`https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940`}
-            username="studiobliss_as"
-          />
-          <Comment
-            postImg={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s750x750/119516927_845632519509825_5327947799728453987_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=FEKAI2nEtxYAX-keNjE&_nc_tp=24&oh=e8ce7165cc3421e6f6d8a29026f93847&oe=5FB25733`}
-            userImg={`https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940`}
-            username="studiobliss_as"
-          />
-          <Comment
-            postImg={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s750x750/119516927_845632519509825_5327947799728453987_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=FEKAI2nEtxYAX-keNjE&_nc_tp=24&oh=e8ce7165cc3421e6f6d8a29026f93847&oe=5FB25733`}
-            userImg={`https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940`}
-            username="studiobliss_as"
-          />
-          <Comment
-            postImg={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s750x750/119516927_845632519509825_5327947799728453987_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=FEKAI2nEtxYAX-keNjE&_nc_tp=24&oh=e8ce7165cc3421e6f6d8a29026f93847&oe=5FB25733`}
-            userImg={`https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940`}
-            username="studiobliss_as"
-          />
-          <Comment
-            postImg={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s750x750/119516927_845632519509825_5327947799728453987_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=FEKAI2nEtxYAX-keNjE&_nc_tp=24&oh=e8ce7165cc3421e6f6d8a29026f93847&oe=5FB25733`}
-            userImg={`https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940`}
-            username="studiobliss_as"
-          />
-        </div>
-        <div className="feeds-container">
-          <Feed
-            imgSrc={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s750x750/119516927_845632519509825_5327947799728453987_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=FEKAI2nEtxYAX-keNjE&_nc_tp=24&oh=e8ce7165cc3421e6f6d8a29026f93847&oe=5FB25733`}
-          />
-          <Feed
-            imgSrc={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s750x750/119222958_628558748034654_7168701339950509168_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=106&_nc_ohc=r8AaS71CtbUAX-9-QAx&_nc_tp=24&oh=9becd57c4f2bf50d0660c23e48c58b8b&oe=5FB1B34A`}
-          />
-          <Feed
-            imgSrc={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p640x640/118481520_160759555624281_8597620682981689217_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=3fTbjMySTfQAX8L1CTZ&_nc_tp=25&oh=f40c0034284184e3028666f5876d3c95&oe=5FB1E7B6`}
-          />
-          <Feed
-            imgSrc={`https://instagram.fcai17-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s750x750/117734564_155563872831491_4083708434821887036_n.jpg?_nc_ht=instagram.fcai17-1.fna.fbcdn.net&_nc_cat=111&_nc_ohc=TP0hPYgDCQ8AX98f5E0&_nc_tp=24&oh=6240e66e99f57241ea503b36586aaa9e&oe=5FB3F92E`}
-          />
+  //Getting data on startup & handle receiving data
+  useEffect(() => {
+    //Get data from api
+    socket.emit("get-data");
+
+    //Send refresh-data event every 60s
+    setInterval(socket.emit("refresh-data"), 60 * 1000);
+
+    //Handle received data
+    socket.on("receive-data", (data) => {
+      console.log("New Data Received");
+      setIsLoading(false);
+      setData(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
+  return (
+    <>
+      <Loading visible={isLoading} />
+      <div className="app-container">
+        <header>
+          <div className="new-comments-head">New Comments</div>
+          <div className="feed-head">Feed</div>
+        </header>
+
+        <div className="app-body">
+          <div className="feeds-container">
+            {data.posts &&
+              data.posts.map((post, i) => (
+                <div className="feed-wrapper" key={i}>
+                  <div className="comments-container">
+                    {post.comments &&
+                      post.comments.map((comment, i) => (
+                        <Comment comment={comment} key={i} />
+                      ))}
+                  </div>
+                  <div className="feed-holder">
+                    <Feed post={post} />
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
