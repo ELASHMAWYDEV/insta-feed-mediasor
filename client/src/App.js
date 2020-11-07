@@ -33,7 +33,7 @@ const App = () => {
       setData(data);
     });
   }, []);
-  console.log(process.env)
+  console.log(SOCKET_URL);
 
   useEffect(() => {
     console.log(data);

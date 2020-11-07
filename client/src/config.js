@@ -1,1 +1,3 @@
-export const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
+const { hostname, port, protocol } = window.location;
+
+export const SOCKET_URL = `${protocol == "https" ? "wss" : "ws"}://${hostname}:${process.env.NODE_ENV == "production" ? port : 5001}`;
