@@ -23,6 +23,9 @@ const App = () => {
     //Send refresh-data event every 60s
     setInterval(socket.emit("refresh-data"), 60 * 1000);
 
+    //Handle loading socket
+    socket.on("loading", () => console.log("Loading Data..."));
+
     //Handle received data
     socket.on("receive-data", (data) => {
       console.log("New Data Received");
