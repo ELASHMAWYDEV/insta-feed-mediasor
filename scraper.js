@@ -57,6 +57,7 @@ const getProfileInfo = async (username = "mediasor") => {
     );
     let data = await response.data;
     console.log(data);
+    console.log("status: ", await response.status);
     let { graphql } = data || {};
     let { user } = graphql || {};
 
