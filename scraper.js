@@ -55,7 +55,9 @@ const getProfileInfo = async (username = "mediasor") => {
     let response = await axios.get(
       `https://www.instagram.com/${username}?__a=1`
     );
-    let { graphql } = await response.data;
+    let data = await response.data;
+    console.log(data);
+    let { graphql } = data || {};
     let { user } = graphql || {};
 
     let profileInfo = {
