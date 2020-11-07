@@ -12,7 +12,7 @@ module.exports = async (username = "mediasor") => {
     console.log("Started Scraping...");
 
     //Init browser
-    let browser = await puppeteer.launch();
+    let browser = await puppeteer.launch({args: ['--no-sandbox']});
     let page = await browser.newPage();
     await page.goto(`https://www.instagram.com/${username}`); //Open the user profile page
 
