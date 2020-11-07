@@ -33,6 +33,7 @@ const App = () => {
       setData(data);
     });
   }, []);
+  console.log(process.env)
 
   useEffect(() => {
     console.log(data);
