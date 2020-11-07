@@ -12,7 +12,7 @@ module.exports = async (username = "mediasor") => {
     console.log("Started Scraping...");
 
     //Init browser
-    let browser = await puppeteer.launch({args: ['--no-sandbox']});
+    let browser = await puppeteer.launch({ args: ["--no-sandbox"] });
     let page = await browser.newPage();
     await page.goto(`https://www.instagram.com/${username}`); //Open the user profile page
 
@@ -34,15 +34,14 @@ module.exports = async (username = "mediasor") => {
       fullName,
       profilePic,
       postsCount,
-      posts
-    }
+      posts,
+    };
 
     await browser.close();
 
     //Log taken time to execute
     let t1 = performance.now();
     console.log(`Time taken: ${((t1 - t0) / 1000).toFixed(1)}s`);
-
 
     return data;
   } catch (e) {
@@ -51,20 +50,26 @@ module.exports = async (username = "mediasor") => {
 };
 
 const getProfileInfo = async (username) => {
-  //Get the user object from __a=1
-  let response = await axios.get(`https://www.instagram.com/${username}?__a=1`);
-  let data = await response.data;
+  try {
+    //Get the user object from __a=1
+    let response = await axios.get(
+      `https://www.instagram.com/${username}?__a=1`
+    );
+    let data = await response.data;
 
-  let profileInfo = {
-    id: data.graphql.user.id,
-    bio: data.graphql.user.biography,
-    followers: data.graphql.user.edge_followed_by.count,
-    fullName: data.graphql.user.full_name,
-    profilePic: data.graphql.user.profile_pic_url_hd,
-    postsCount: data.graphql.user.edge_owner_to_timeline_media.count,
-  };
+    let profileInfo = {
+      id: data.graphql.user.id,
+      bio: data.graphql.user.biography,
+      followers: data.graphql.user.edge_followed_by.count,
+      fullName: data.graphql.user.full_name,
+      profilePic: data.graphql.user.profile_pic_url_hd,
+      postsCount: data.graphql.user.edge_owner_to_timeline_media.count,
+    };
 
-  return profileInfo;
+    return profileInfo;
+  } catch (e) {
+    console.log(e.message);
+  }
 };
 
 //Get all posts links
