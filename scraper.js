@@ -49,26 +49,28 @@ module.exports = async (username = "mediasor") => {
   }
 };
 
-const getProfileInfo = async (username) => {
+const getProfileInfo = async (username = "mediasor") => {
   try {
     //Get the user object from __a=1
     let response = await axios.get(
       `https://www.instagram.com/${username}?__a=1`
     );
-    let data = await response.data;
+    let { graphql } = await response.data;
+    let { user } = graphql || {};
 
     let profileInfo = {
-      id: data.graphql.user.id,
-      bio: data.graphql.user.biography,
-      followers: data.graphql.user.edge_followed_by.count,
-      fullName: data.graphql.user.full_name,
-      profilePic: data.graphql.user.profile_pic_url_hd,
-      postsCount: data.graphql.user.edge_owner_to_timeline_media.count,
+      id: user.id,
+      bio: user.biography,
+      followers: user.edge_followed_by.count,
+      fullName: user.full_name,
+      profilePic: user.profile_pic_url_hd,
+      postsCount: user.edge_owner_to_timeline_media.count,
     };
 
     return profileInfo;
   } catch (e) {
     console.log(e.message);
+    console.log(graphql);
   }
 };
 
