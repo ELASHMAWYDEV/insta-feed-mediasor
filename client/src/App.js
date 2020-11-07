@@ -26,6 +26,9 @@ const App = () => {
     //Handle loading socket
     socket.on("loading", () => console.log("Loading Data..."));
 
+    //Hanlde any socket errors
+    socket.on("error", (e) => console.log(`Socket Error: ${e}`));
+
     //Handle received data
     socket.on("receive-data", (data) => {
       console.log("New Data Received");

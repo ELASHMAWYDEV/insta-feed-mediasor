@@ -34,7 +34,7 @@ module.exports = (io) => {
             socket.emit("loading");
 
             //Scrape data & send to client
-            let data = await scraper();
+            let data = await scraper() || [];
 
             if (Object.keys(data).length != 0) {
               socket.emit("receive-data", data);
