@@ -14,6 +14,10 @@ module.exports = async (username = "mediasor") => {
     //Init browser
     let browser = await puppeteer.launch({ args: ["--no-sandbox"] });
     let page = await browser.newPage();
+
+    //Login first
+    await loginAnonymos(page);
+
     await page.goto(`https://www.instagram.com/${username}`); //Open the user profile page
 
     //Get profile info
@@ -56,7 +60,6 @@ const getProfileInfo = async (username = "mediasor") => {
       `https://www.instagram.com/${username}?__a=1`
     );
     let data = await response.data;
-    console.log(data);
     console.log("status: ", await response.status);
     let { graphql } = data || {};
     let { user } = graphql || {};
@@ -73,7 +76,6 @@ const getProfileInfo = async (username = "mediasor") => {
     return profileInfo;
   } catch (e) {
     console.log(e.message);
-    console.log(graphql);
   }
 };
 
@@ -165,4 +167,18 @@ const getPostsData = async (postsLinks) => {
     console.log(e);
     return [];
   }
+};
+
+const loginAnonymos = async (page) => {
+  const instaEmail = "mediasor@elashmawydev.com";
+  const instaPass = "qwerasdf";
+
+  //go to login page
+  await page.goto("https://www.instagram.com/accounts/login/");
+  await page.waitForTimeout(2000);
+  await page.type("._2hvTZ.pexuQ.zyHYP", instaEmail);
+  await page.type("._2hvTZ.pexuQ.zyHYP", instaPass);
+  await page.click(".sqdOP.L3NKy.y3zKF");
+  await page.waitForTimeout(500);
+  console.log(`Logged in: ${await page.url()}`);
 };
