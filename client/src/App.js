@@ -6,6 +6,7 @@ import io from "socket.io-client";
 //Components
 import Feed from "./components/Feed/Feed";
 import Comment from "./components/Comment/Comment";
+import Header from "./components/Header/Header";
 import Loading from "./components/Loading/Loading";
 
 //Init Socket
@@ -17,9 +18,6 @@ const App = () => {
 
   //Getting data on startup & handle receiving data
   useEffect(() => {
-    //Get data from api
-    socket.emit("get-data");
-
     //Emit get-data on connect
     socket.on("connect", () => socket.emit("get-data"));
 
@@ -28,9 +26,6 @@ const App = () => {
 
     //Handle loading socket
     socket.on("loading", () => console.log("Loading Data..."));
-
-    //Hanlde any socket errors
-    socket.on("error", (e) => console.log(`Socket Error: ${e}`));
 
     //Handle received data
     socket.on("receive-data", (data) => {
@@ -48,6 +43,12 @@ const App = () => {
     <>
       <Loading visible={isLoading} />
       <div className="app-container">
+        <Header
+          username={data.username && data.username}
+          followers={data.followers && data.followers}
+          profilePic={data.profilePic && data.profilePic}
+          postsCount={data.postsCount && data.postsCount}
+        />
         <header>
           <div className="new-comments-head">New Comments</div>
           <div className="feed-head">Feed</div>

@@ -28,7 +28,7 @@ module.exports = (io) => {
 
           //Emit data from data.json if fileHasData
           if (fileHasData) {
-            socket.emit("receive-data", dataFile.data);
+            io.sockets.emit("receive-data", dataFile.data);
           } else {
             //Scrape data & send it to client, mean while send loading event
             socket.emit("loading");
@@ -37,7 +37,7 @@ module.exports = (io) => {
             let data = (await scraper()) || [];
 
             if (Object.keys(data).length != 0) {
-              socket.emit("receive-data", data);
+              io.sockets.emit("receive-data", data);
 
               //save new data to data.json file
               dataFile.empty();

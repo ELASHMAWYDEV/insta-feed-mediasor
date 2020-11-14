@@ -1,0 +1,66 @@
+@import "../../assets/sass/globals";
+
+
+$shadow: 0px 3px 10px rgba(0,0,0,0.3);
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 60%;
+  margin: auto;
+  margin-top: 20px;
+  .followers {
+    color: $white;
+    text-align: center;
+    margin-right: 80px;
+    & > div {
+      &:nth-child(1) {
+        font-size: 34px;
+        font-weight: bold;
+      }
+      &:nth-child(2) {
+        font-size: 60px;
+        font-weight: bold;
+        line-height: 60px;
+        text-shadow: $shadow;
+
+      }
+    }
+  }
+  .posts {
+    color: $white;
+    text-align: center;
+    margin-left: 80px;
+    & > div {
+      &:nth-child(1) {
+        font-size: 34px;
+        font-weight: bold;
+      }
+      &:nth-child(2) {
+        font-size: 60px;
+        font-weight: bold;
+        line-height: 60px;
+        text-shadow: $shadow;
+      }
+    }
+  }
+  .user {
+    display: flex;
+    align-items: center;
+    .logo > img {
+      display: block;
+      width: 200px;
+      height: 200px;
+      border-radius: calc(200px / 2);
+      overflow: hidden; 
+      box-shadow: $shadow;
+    }
+    .username {
+      margin-left: 50px;
+      font-size: 60px;
+      color: $white;
+      font-weight: bold;
+    }
+  }
+}

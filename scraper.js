@@ -15,7 +15,7 @@ module.exports = async (username = "mediasor") => {
     //Init browser
     let browser = await puppeteer.launch({
       args: ["--no-sandbox"],
-      headless: process.env.NODE_ENV == "production" ? true : false,
+      // headless: process.env.NODE_ENV == "production" ? true : false,
     });
     let page = await browser.newPage();
 
@@ -37,6 +37,7 @@ module.exports = async (username = "mediasor") => {
     //Add vars to data object
     data = {
       id,
+      username,
       bio,
       followers,
       fullName,
@@ -74,6 +75,7 @@ const getProfileInfo = async (page, username = "mediasor") => {
 
     let profileInfo = {
       id: user.id || "",
+      username: user.username || "",
       bio: user.biography || "",
       followers: user.edge_followed_by.count || "",
       fullName: user.full_name || "",
