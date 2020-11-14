@@ -14,6 +14,7 @@ module.exports = async (username = "mediasor") => {
     //Init browser
     let browser = await puppeteer.launch({
       args: ["--no-sandbox"],
+      headless: false,
     });
     let page = await browser.newPage();
 
@@ -29,7 +30,7 @@ module.exports = async (username = "mediasor") => {
     console.log("Finished getting links...");
 
     //Get each post data
-    let posts = await getPostsData(postsLinks);
+    let posts = await getPostsData(page ,postsLinks);
     console.log("Getting Posts Data Done...");
 
     //Add vars to data object
@@ -79,7 +80,6 @@ const getProfileInfo = async (page, username = "mediasor") => {
       postsCount: user.edge_owner_to_timeline_media.count || "",
     };
 
-    console.log(profileInfo);
     return profileInfo;
   } catch (e) {
     console.log(e.message);
@@ -123,7 +123,7 @@ const getLinks = async (page, postsCount, username = "mediasor") => {
   return [...postsLinks];
 };
 
-const getPostsData = async (postsLinks) => {
+const getPostsData = async (page, postsLinks) => {
   //Init empty object
   let postsData = [];
   let error = null;
@@ -132,12 +132,12 @@ const getPostsData = async (postsLinks) => {
     try {
       //Open new tab in puppeteer & open post link
       for (let link of postsLinks) {
-        const response = await axios.post(`${link}?__a=1`);
-        const data = await response.data;
+        await page.goto(`${link}?__a=1`);
+        const data = await page.evaluate(() => JSON.parse(document.querySelector("pre").innerText));
 
-        //Delay 1s after every 20 posts
-        if (postsLinks.indexOf(link) % 20 == 0) {
-          await setTimeout(async () => console.log("Got 20 posts"), 1000);
+        //log after every 20 posts
+        if (postsLinks.indexOf(link) % 20 == 0 && postsLinks.indexOf(link) != 0) {
+          console.log("Got 20 posts");
         }
 
         //Get neccessary data only
@@ -209,6 +209,6 @@ const loginAnonymos = async (page, username = "mediasor") => {
   await page.type("._2hvTZ.pexuQ.zyHYP[name='username']", instaEmail);
   await page.type("._2hvTZ.pexuQ.zyHYP[name='password']", instaPass);
   await page.click(".sqdOP.L3NKy.y3zKF");
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(3000);
   console.log(`Logged in: ${await page.url()}`);
 };
