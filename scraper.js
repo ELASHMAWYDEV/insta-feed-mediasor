@@ -14,23 +14,19 @@ module.exports = async (username = "mediasor") => {
     //Init browser
     let browser = await puppeteer.launch({
       args: ["--no-sandbox"],
+      headless: false,
     });
     let page = await browser.newPage();
 
     //Login first
     await loginAnonymos(page, username);
 
-    await page.goto(`https://www.instagram.com/${username}`, {
-      timeout: 0,
-      waitUntil: ["load", "domcontentloaded", "networkidle0"],
-    }); //Open the user profile page
-
     // Get profile info
     const { id, bio, followers, fullName, profilePic, postsCount } =
-      (await getProfileInfo(username)) || {};
+      (await getProfileInfo(page, username)) || {};
 
     //Get links
-    let postsLinks = await getLinks(page, postsCount);
+    let postsLinks = await getLinks(page, postsCount, username);
     console.log("Finished getting links...");
 
     //Get each post data
@@ -60,16 +56,19 @@ module.exports = async (username = "mediasor") => {
   }
 };
 
-const getProfileInfo = async (username = "mediasor") => {
+const getProfileInfo = async (page, username = "mediasor") => {
   try {
     //Get the user object from __a=1
-    let response = await axios.get(
-      `https://www.instagram.com/${username}?__a=1`
-    );
-    let data = await response.data;
+    await page.goto(`https://www.instagram.com/${username}?__a=1`, {
+      timeout: 0,
+      waitUntil: ["load", "domcontentloaded", "networkidle0"],
+    }); //Open the user profile page
 
-    console.log("Profile Info axios current: ", response.request.res.responseUrl);
-    let { graphql } = data || {};
+    console.log("Profile Info puppeteer current: ", await page.url());
+    let jsonContent = await page.evaluate(() =>
+      JSON.parse(document.querySelector("pre").innerText)
+    );
+    let { graphql } = jsonContent || {};
     let { user } = graphql || {};
 
     let profileInfo = {
@@ -81,6 +80,7 @@ const getProfileInfo = async (username = "mediasor") => {
       postsCount: user.edge_owner_to_timeline_media.count || "",
     };
 
+    console.log(profileInfo);
     return profileInfo;
   } catch (e) {
     console.log(e.message);
@@ -88,9 +88,16 @@ const getProfileInfo = async (username = "mediasor") => {
 };
 
 //Get all posts links
-const getLinks = async (page, postsCount) => {
+const getLinks = async (page, postsCount, username = "mediasor") => {
   /*-------------...Get Posts' Links...------------*/
   let postsLinks = new Set();
+  await page.goto(
+    `https://www.instagram.com/${username}`,
+    {
+      timeout: 0,
+      waitUntil: ["load", "domcontentloaded", "networkidle0"],
+    }
+  );
 
   //Scroll to the end
   while (postsLinks.size < postsCount) {
@@ -192,17 +199,17 @@ const loginAnonymos = async (page, username = "mediasor") => {
   const instaPass = "qwerasdf";
 
   //go to login page
-  await page.goto(`https://www.instagram.com/accounts/login/?next=/${username}/%3F__a%3D1`, {
-    timeout: 0,
-    waitUntil: ["load", "domcontentloaded", "networkidle0"],
-  });
+  await page.goto(
+    `https://www.instagram.com/accounts/login/?next=/${username}/%3F__a%3D1`,
+    {
+      timeout: 0,
+      waitUntil: ["load", "domcontentloaded", "networkidle0"],
+    }
+  );
   await page.waitForTimeout(2000);
   await page.type("._2hvTZ.pexuQ.zyHYP[name='username']", instaEmail);
   await page.type("._2hvTZ.pexuQ.zyHYP[name='password']", instaPass);
   await page.click(".sqdOP.L3NKy.y3zKF");
-  await page.waitForTimeout(2000);
-  //Click on Not now to redirect to profile info page
-  await page.click(".cmbtv > button");
   await page.waitForTimeout(2000);
   console.log(`Logged in: ${await page.url()}`);
 };
