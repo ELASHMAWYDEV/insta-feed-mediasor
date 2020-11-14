@@ -31,7 +31,7 @@ module.exports = async (username = "mediasor") => {
     console.log("Finished getting links...");
 
     //Get each post data
-    let posts = await getPostsData(page ,postsLinks);
+    let posts = await getPostsData(page, postsLinks);
     console.log("Getting Posts Data Done...");
 
     //Add vars to data object
@@ -93,13 +93,10 @@ const getProfileInfo = async (page, username = "mediasor") => {
 const getLinks = async (page, postsCount, username = "mediasor") => {
   /*-------------...Get Posts' Links...------------*/
   let postsLinks = new Set();
-  await page.goto(
-    `https://www.instagram.com/${username}`,
-    {
-      timeout: 0,
-      waitUntil: ["load", "domcontentloaded", "networkidle0"],
-    }
-  );
+  await page.goto(`https://www.instagram.com/${username}`, {
+    timeout: 0,
+    waitUntil: ["load", "domcontentloaded", "networkidle0"],
+  });
 
   //Scroll to the end
   while (postsLinks.size < postsCount) {
@@ -135,11 +132,19 @@ const getPostsData = async (page, postsLinks) => {
     try {
       //Open new tab in puppeteer & open post link
       for (let link of postsLinks) {
-        await page.goto(`${link}?__a=1`);
-        const data = await page.evaluate(() => JSON.parse(document.querySelector("pre").innerText));
+        await page.goto(`${link}?__a=1`, {
+          timeout: 0,
+          waitUntil: ["load", "domcontentloaded", "networkidle0"],
+        });
+        const data = await page.evaluate(() =>
+          JSON.parse(document.querySelector("pre").innerText)
+        );
 
         //log after every 20 posts
-        if (postsLinks.indexOf(link) % 20 == 0 && postsLinks.indexOf(link) != 0) {
+        if (
+          postsLinks.indexOf(link) % 20 == 0 &&
+          postsLinks.indexOf(link) != 0
+        ) {
           console.log("Got 20 posts");
         }
 
