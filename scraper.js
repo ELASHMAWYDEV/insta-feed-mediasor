@@ -1,3 +1,4 @@
+require("dotenv/config");
 const puppeteer = require("puppeteer");
 const { performance } = require("perf_hooks");
 const axios = require("axios");
@@ -14,6 +15,7 @@ module.exports = async (username = "mediasor") => {
     //Init browser
     let browser = await puppeteer.launch({
       args: ["--no-sandbox"],
+      headless: process.env.NODE_ENV == "production" ? true : false,
     });
     let page = await browser.newPage();
 
@@ -209,5 +211,7 @@ const loginAnonymos = async (page, username = "mediasor") => {
   await page.type("._2hvTZ.pexuQ.zyHYP[name='password']", instaPass);
   await page.click(".sqdOP.L3NKy.y3zKF");
   await page.waitForTimeout(3000);
+  //Click on Not now
+  await page.click(".cmbtv > button");
   console.log(`Logged in: ${await page.url()}`);
 };
