@@ -12,7 +12,7 @@ module.exports = async (username = "mediasor") => {
     console.log("Started Scraping...");
 
     //Init browser
-    let browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+    let browser = await puppeteer.launch({ args: ["--no-sandbox"], headless: false });
     let page = await browser.newPage();
 
     //Login first
