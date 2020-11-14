@@ -20,6 +20,9 @@ const App = () => {
     //Get data from api
     socket.emit("get-data");
 
+    //Emit get-data on connect
+    socket.on("connect", () => socket.emit("get-data"));
+
     //Send refresh-data event every 60s
     setInterval(socket.emit("refresh-data"), 60 * 1000);
 
@@ -36,7 +39,6 @@ const App = () => {
       setData(data);
     });
   }, []);
-  console.log(SOCKET_URL);
 
   useEffect(() => {
     console.log(data);

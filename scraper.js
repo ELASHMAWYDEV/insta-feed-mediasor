@@ -18,17 +18,22 @@ module.exports = async (username = "mediasor") => {
     //Login first
     await loginAnonymos(page);
 
-    await page.goto(`https://www.instagram.com/${username}`); //Open the user profile page
+    await page.goto(`https://www.instagram.com/${username}`, {
+      timeout: 0,
+      waitUntil: ["load", "domcontentloaded", "networkidle0"],
+    }); //Open the user profile page
 
-    //Get profile info
+    // Get profile info
     const { id, bio, followers, fullName, profilePic, postsCount } =
       (await getProfileInfo(username)) || {};
 
     //Get links
     let postsLinks = await getLinks(page, postsCount);
+    console.log("Finished getting links...");
 
     //Get each post data
     let posts = await getPostsData(postsLinks);
+    console.log("Getting Posts Data Done...");
 
     //Add vars to data object
     data = {
@@ -60,7 +65,6 @@ const getProfileInfo = async (username = "mediasor") => {
       `https://www.instagram.com/${username}?__a=1`
     );
     let data = await response.data;
-    console.log("status: ", await response.status);
     let { graphql } = data || {};
     let { user } = graphql || {};
 
@@ -110,63 +114,73 @@ const getLinks = async (page, postsCount) => {
 };
 
 const getPostsData = async (postsLinks) => {
-  try {
-    //Init empty object
-    let postsData = [];
+  //Init empty object
+  let postsData = [];
+  let error = null;
 
-    //Open new tab in puppeteer & open post link
-    for (let link of postsLinks) {
-      const response = await axios.get(`${link}?__a=1`);
-      const data = await response.data;
+  do {
+    try {
+      //Open new tab in puppeteer & open post link
+      for (let link of postsLinks) {
+        const response = await axios.post(`${link}?__a=1`);
+        const data = await response.data;
 
-      //Get neccessary data only
-      let postData = {
-        id: data.graphql.shortcode_media.id,
-        type: data.graphql.shortcode_media.__typename,
-        url: `https://instagram.com/p/${data.graphql.shortcode_media.shortcode}`,
-        imageUrl: data.graphql.shortcode_media.display_url,
-        isVideo: data.graphql.shortcode_media.is_video,
-        viewsCount: data.graphql.shortcode_media.video_view_count || null,
-        caption:
-          data.graphql.shortcode_media.edge_media_to_caption.edges[0].node.text,
-        commentsCount:
-          data.graphql.shortcode_media.edge_media_to_parent_comment.count,
-        commentsDisabled: data.graphql.shortcode_media.comments_disabled,
-        timestamp: data.graphql.shortcode_media.taken_at_timestamp,
-        likesCount: data.graphql.shortcode_media.edge_media_preview_like.count,
-        comments: data.graphql.shortcode_media.edge_media_to_parent_comment.edges.map(
-          ({ node }) => {
-            return {
-              id: node.id,
-              text: node.text,
-              timestamp: node.created_at,
-              username: node.owner.username,
-              imageUrl: node.owner.profile_pic_url,
-              likesCount: node.edge_liked_by.count,
-              repliesCount: node.edge_threaded_comments.count,
-              replies: node.edge_threaded_comments.edges.map(({ node }) => {
-                return {
-                  id: node.id,
-                  text: node.text,
-                  timestamp: node.created_at,
-                  username: node.owner.username,
-                  imageUrl: node.owner.profile_pic_url,
-                  likesCount: node.edge_liked_by.count,
-                };
-              }),
-            };
-          }
-        ),
-      };
+        //Delay 1s after every 20 posts
+        if (postsLinks.indexOf(link) % 20 == 0) {
+          await setTimeout(async () => console.log("Got 20 posts"), 1000);
+        }
 
-      postsData.push(postData);
+        //Get neccessary data only
+        let postData = {
+          id: data.graphql.shortcode_media.id,
+          type: data.graphql.shortcode_media.__typename,
+          url: `https://instagram.com/p/${data.graphql.shortcode_media.shortcode}`,
+          imageUrl: data.graphql.shortcode_media.display_url,
+          isVideo: data.graphql.shortcode_media.is_video,
+          viewsCount: data.graphql.shortcode_media.video_view_count || null,
+          caption:
+            data.graphql.shortcode_media.edge_media_to_caption.edges[0].node
+              .text,
+          commentsCount:
+            data.graphql.shortcode_media.edge_media_to_parent_comment.count,
+          commentsDisabled: data.graphql.shortcode_media.comments_disabled,
+          timestamp: data.graphql.shortcode_media.taken_at_timestamp,
+          likesCount:
+            data.graphql.shortcode_media.edge_media_preview_like.count,
+          comments: data.graphql.shortcode_media.edge_media_to_parent_comment.edges.map(
+            ({ node }) => {
+              return {
+                id: node.id,
+                text: node.text,
+                timestamp: node.created_at,
+                username: node.owner.username,
+                imageUrl: node.owner.profile_pic_url,
+                likesCount: node.edge_liked_by.count,
+                repliesCount: node.edge_threaded_comments.count,
+                replies: node.edge_threaded_comments.edges.map(({ node }) => {
+                  return {
+                    id: node.id,
+                    text: node.text,
+                    timestamp: node.created_at,
+                    username: node.owner.username,
+                    imageUrl: node.owner.profile_pic_url,
+                    likesCount: node.edge_liked_by.count,
+                  };
+                }),
+              };
+            }
+          ),
+        };
+
+        postsData.push(postData);
+      }
+    } catch (e) {
+      console.log(e.message);
+      error = e.message;
     }
+  } while (error);
 
-    return postsData;
-  } catch (e) {
-    console.log(e);
-    return [];
-  }
+  return postsData;
 };
 
 const loginAnonymos = async (page) => {
@@ -174,11 +188,14 @@ const loginAnonymos = async (page) => {
   const instaPass = "qwerasdf";
 
   //go to login page
-  await page.goto("https://www.instagram.com/accounts/login/");
+  await page.goto("https://www.instagram.com/accounts/login/", {
+    timeout: 0,
+    waitUntil: ["load", "domcontentloaded", "networkidle0"],
+  });
   await page.waitForTimeout(2000);
-  await page.type("._2hvTZ.pexuQ.zyHYP", instaEmail);
-  await page.type("._2hvTZ.pexuQ.zyHYP", instaPass);
+  await page.type("._2hvTZ.pexuQ.zyHYP[name='username']", instaEmail);
+  await page.type("._2hvTZ.pexuQ.zyHYP[name='password']", instaPass);
   await page.click(".sqdOP.L3NKy.y3zKF");
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(4000);
   console.log(`Logged in: ${await page.url()}`);
 };

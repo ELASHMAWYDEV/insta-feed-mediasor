@@ -34,7 +34,7 @@ module.exports = (io) => {
             socket.emit("loading");
 
             //Scrape data & send to client
-            let data = await scraper() || [];
+            let data = (await scraper()) || [];
 
             if (Object.keys(data).length != 0) {
               socket.emit("receive-data", data);
@@ -43,13 +43,10 @@ module.exports = (io) => {
               dataFile.empty();
               dataFile.set(data);
               dataFile.save();
-            } else {
-              socket.emit("error", "Problem loading feed posts...");
             }
           }
         } catch (e) {
           console.log(e.message);
-          socket.emit("error", e);
         }
       });
 
@@ -72,12 +69,9 @@ module.exports = (io) => {
             dataFile.empty();
             dataFile.set(data);
             dataFile.save();
-          } else {
-            socket.emit("error", "Problem loading feed posts...");
           }
         } catch (e) {
           console.log(e.message);
-          socket.emit("error", `Error: ${e.message}`);
         }
       });
     } catch (e) {
