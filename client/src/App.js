@@ -19,10 +19,13 @@ const App = () => {
   //Getting data on startup & handle receiving data
   useEffect(() => {
     //Emit get-data on connect
-    socket.on("connect", () => socket.emit("get-data"));
+    socket.on("connect", () => {
+      socket.emit("get-data");
+      socket.emit("refresh-data");
+    });
 
     //Send refresh-data event every 60s
-    setInterval(socket.emit("refresh-data"), 60 * 1000);
+    setInterval(() => socket.emit("refresh-data"), 60 * 1000);
 
     //Handle loading socket
     socket.on("loading", () => console.log("Loading Data..."));
