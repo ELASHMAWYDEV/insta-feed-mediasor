@@ -12,7 +12,10 @@ module.exports = async (username = "mediasor") => {
     console.log("Started Scraping...");
 
     //Init browser
-    let browser = await puppeteer.launch({ args: ["--no-sandbox"], headless: false });
+    let browser = await puppeteer.launch({
+      args: ["--no-sandbox"],
+      headless: false,
+    });
     let page = await browser.newPage();
 
     //Login first
@@ -65,16 +68,18 @@ const getProfileInfo = async (username = "mediasor") => {
       `https://www.instagram.com/${username}?__a=1`
     );
     let data = await response.data;
+
+    console.log("Profile Data: ", data);
     let { graphql } = data || {};
     let { user } = graphql || {};
 
     let profileInfo = {
-      id: user.id,
-      bio: user.biography,
-      followers: user.edge_followed_by.count,
-      fullName: user.full_name,
-      profilePic: user.profile_pic_url_hd,
-      postsCount: user.edge_owner_to_timeline_media.count,
+      id: user.id || undefined,
+      bio: user.biography || undefined,
+      followers: user.edge_followed_by.count || undefined,
+      fullName: user.full_name || undefined,
+      profilePic: user.profile_pic_url_hd || undefined,
+      postsCount: user.edge_owner_to_timeline_media.count || undefined,
     };
 
     return profileInfo;
