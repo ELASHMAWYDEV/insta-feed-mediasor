@@ -18,7 +18,7 @@ module.exports = async (username = "mediasor") => {
     let page = await browser.newPage();
 
     //Login first
-    await loginAnonymos(page);
+    await loginAnonymos(page, username);
 
     await page.goto(`https://www.instagram.com/${username}`, {
       timeout: 0,
@@ -187,12 +187,12 @@ const getPostsData = async (postsLinks) => {
   return postsData;
 };
 
-const loginAnonymos = async (page) => {
+const loginAnonymos = async (page, username = "mediasor") => {
   const instaEmail = "mediasor@elashmawydev.com";
   const instaPass = "qwerasdf";
 
   //go to login page
-  await page.goto("https://www.instagram.com/accounts/login/", {
+  await page.goto(`https://www.instagram.com/accounts/login/?next=/${username}/%3F__a%3D1`, {
     timeout: 0,
     waitUntil: ["load", "domcontentloaded", "networkidle0"],
   });
@@ -200,6 +200,9 @@ const loginAnonymos = async (page) => {
   await page.type("._2hvTZ.pexuQ.zyHYP[name='username']", instaEmail);
   await page.type("._2hvTZ.pexuQ.zyHYP[name='password']", instaPass);
   await page.click(".sqdOP.L3NKy.y3zKF");
-  await page.waitForTimeout(4000);
+  await page.waitForTimeout(2000);
+  //Click on Not now to redirect to profile info page
+  await page.click(".cmbtv > button");
+  await page.waitForTimeout(2000);
   console.log(`Logged in: ${await page.url()}`);
 };
