@@ -68,7 +68,7 @@ const getProfileInfo = async (username = "mediasor") => {
     );
     let data = await response.data;
 
-    console.log("Profile Data: ", data);
+    console.log("Profile Info axios current: ", response.request.res.responseUrl);
     let { graphql } = data || {};
     let { user } = graphql || {};
 
