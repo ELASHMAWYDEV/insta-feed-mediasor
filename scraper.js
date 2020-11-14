@@ -15,12 +15,12 @@ module.exports = async (username = "mediasor") => {
     //Init browser
     let browser = await puppeteer.launch({
       args: ["--no-sandbox"],
-      // headless: process.env.NODE_ENV == "production" ? true : false,
+      headless: process.env.NODE_ENV == "production" ? true : false,
     });
     let page = await browser.newPage();
 
     //Login first
-    await loginAnonymos(page, username);
+    // await loginAnonymos(page, username);
 
     // Get profile info
     const { id, bio, followers, fullName, profilePic, postsCount } =
@@ -66,6 +66,7 @@ const getProfileInfo = async (page, username = "mediasor") => {
       waitUntil: ["load", "domcontentloaded", "networkidle0"],
     }); //Open the user profile page
 
+    await page.waitForTimeout(1000);
     console.log("Profile Info puppeteer current: ", await page.url());
     let jsonContent = await page.evaluate(() =>
       JSON.parse(document.querySelector("pre").innerText)
@@ -98,6 +99,7 @@ const getLinks = async (page, postsCount, username = "mediasor") => {
     waitUntil: ["load", "domcontentloaded", "networkidle0"],
   });
 
+  console.log("Post Data puppeteer current: ", await page.url());
   //Scroll to the end
   while (postsLinks.size < postsCount) {
     try {
