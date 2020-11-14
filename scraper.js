@@ -14,7 +14,6 @@ module.exports = async (username = "mediasor") => {
     //Init browser
     let browser = await puppeteer.launch({
       args: ["--no-sandbox"],
-      headless: false,
     });
     let page = await browser.newPage();
 
